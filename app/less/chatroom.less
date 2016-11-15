@@ -1,0 +1,258 @@
+@brown: #443642;
+@yellow: #E8A723;
+@blue: #70CADB;
+@green: #3EB890;
+@red: #E01765;
+
+html { height: 100%; } body { min-height: 100%; }
+
+.chatpage {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	display: table;
+}
+.sidebar {
+	background: @brown;
+	color: #FFFAFA;
+	height: 100%;
+	width: 225px;
+	display: table-cell;
+
+	.header {
+		width: 225px;
+		padding-top: 20px;
+		padding-bottom: 20px;
+		font-weight: bold;
+		font-size: 200%;
+		text-align: center;
+		color: @yellow;
+		overflow: hidden;
+		text-overflow: ellipsis;
+
+		&:hover {
+			background: @green;
+			color: white;
+		}
+	}
+	.miniheader {
+		width: 100%;
+		padding-top: 5%;
+		font-weight: bold;
+		font-size: 150%;
+		padding-left: 20px;
+	}
+	.box {
+		width: 175px;
+		margin-left: 7%;
+		padding-top: 5px;
+		padding-bottom: 5px;
+		height: 200px;
+		overflow-y: scroll;
+		overflow-x: hidden;
+		border: 1px solid #D8BFD8;
+
+		.option {
+			width: 175px;
+			padding-left: 5%;
+			padding-right: 15%;
+			font-weight: bold;
+			overflow: hidden;
+			text-overflow: ellipsis;
+
+			&:hover {
+				background: @green;
+				color: white;
+			}
+		}
+	}
+	.botbar {
+		width: 225px;
+		height: 60px;
+		position: fixed;
+		bottom: 0; left: 0;
+		background: @yellow;
+		color: @brown;
+
+		.top {
+			padding-left: 20px;
+		}
+		.bot {
+			padding-left: 25px;
+			font-weight: bold;
+			font-size: 150%;
+		}
+	}
+}
+.chatbox {
+	height: 100%;
+	width: 100%;
+	display: block;
+	background: #FFFAFA;
+
+	.chatWrapper {
+		-moz-box-sizing:border-box;
+	    -webkit-box-sizing:border-box;
+	    box-sizing:border-box;
+		height: 100%;
+		width: 100%;
+		position: relative;
+
+		.msgBox {
+			width: 100%;
+			top: 0;
+			bottom: 60px;
+			position: absolute;
+			overflow-y: scroll;
+
+			.newMsg {
+				width: 100%;
+				padding-bottom: 5px;
+				display: table;
+
+				&:hover {
+					background: #e6e6e6;
+				}
+
+				.usrImg {
+					width: 50px;
+					height: 50px;
+					display: table-cell;
+					padding: 10px 0px 0px 10px;
+
+					.img {
+						height: 40px;
+						width: 40px;
+						background: blue;
+					}
+				}
+				.msgCont {
+					display: block;
+					width: 100%;
+
+					.usrName {
+						padding: 5px 5px 5px 15px;
+						width: 1%;
+						height: 1%;
+						font-weight: bold;
+						display: table-cell;
+					}
+					.msgTime {
+						padding: 5px 5px 5px 5px;
+						width: 100%;
+						color: gray;
+						display: block;
+					}
+				}
+			}
+			.oldMsg {
+				width: 100%;
+				color: white;
+				padding: 5px 0px 5px 0px;
+
+				&:hover {
+					background: #e6e6e6;
+					color: gray;
+				}
+
+				.oldTime {
+					width: 50px;
+					padding-left: 10px;
+					display: table-cell;
+				}
+			}
+			.msgText {
+				padding: 2.5px 15px 2.5px 15px;
+				display: block;
+				color: black;
+			}
+			.newDay {
+				position: relative;
+				width: 100%;
+				height: 29px;
+				text-align: center;
+
+				.dayDivider {
+					position: absolute;
+					z-index: inherit;
+					top: 14px;
+					height: 1px;
+					width: 100%;
+					background: black;
+				}
+				.dayTime {
+					position: relative;
+					z-index: 20;
+					display: inline-block;
+					padding: 0 15px 0 15px;
+					background: #FFFAFA;
+					z-index: 2;
+					font-weight: bold;
+					font-size: 125%;
+					line-height: 29px;
+					vertical-align: middle;
+				}
+			}
+		}
+		.sendCont {
+			width: 100%;
+			height: 60px;
+			position: absolute;
+			bottom: 0;
+			padding-top: 12.5px;
+			padding-left: 5%;
+			padding-right: 5%;
+
+			.sendMsg {
+				width: 100%;
+				display: block;
+
+				input {
+					border-radius: 5px 0 0 5px;
+					width: 100%;
+					height: 35px;
+					padding-left: 10px;
+					padding-right: 10px;
+
+					&:focus {
+						border-radius: none;
+						appearance: none;
+						outline: none;
+					}
+				}
+			}
+			.submitMsg {
+				padding: 5px 10px 6px 10px;
+				display: table-cell;
+				width: 1%;
+				border-radius: 0 5px 5px 0;
+				border: 2px solid #b8b8b8;
+				color: gray;
+				font-weight: bold;
+
+				&:hover {
+					background: @green;
+					border: 2px solid @green;
+					color: white;
+				}
+			}
+		}
+	}
+}
+.wrapper {
+	display: table;
+}
+
+// Custom scrollbar
+::-webkit-scrollbar {
+    width: 12px;
+}
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: @brown;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}

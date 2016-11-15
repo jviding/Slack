@@ -1,0 +1,24 @@
+{
+  "name": "Slack",
+  "description": "A copy of Slack",
+  "main": "server.js",
+  "authors": [
+    "jviding <jasu.viding@helsinki.fi>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/jviding/Slack",
+  "moduleType": [
+    "node"
+  ],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.7"
+  }
+}
