@@ -29,6 +29,7 @@ html { height: 100%; } body { min-height: 100%; }
 		color: @yellow;
 		overflow: hidden;
 		text-overflow: ellipsis;
+		cursor: default;
 
 		&:hover {
 			background: @green;
@@ -41,6 +42,50 @@ html { height: 100%; } body { min-height: 100%; }
 		font-weight: bold;
 		font-size: 150%;
 		padding-left: 20px;
+		padding-right: 35px;
+		cursor: default;
+
+		.head {
+			width: 100%;
+			display: block;
+		}
+		.add {
+			display: table-cell;
+			width: 1%;
+		}
+	}
+	.hover {
+		&:hover {
+			color: @green;
+		}
+	}
+	.channelForm {
+		width: 100%;
+		padding: 0 20px 5px 20px;
+
+		input {
+			padding-left: 5px;
+			display: block;
+			width: 100%;
+			border: @yellow;
+			color: black;
+		}
+		.add {
+			display: table-cell;
+			width: 1%;
+			border: 1px solid @yellow;
+			font-weight: bold;
+			color: @yellow;
+			padding: 0 5px 0 5px;
+
+			&:hover {
+				color: white;
+				background: @green;
+				border: 1px solid @green;
+				cursor: pointer;
+			}
+		}
+
 	}
 	.box {
 		width: 175px;
@@ -50,20 +95,40 @@ html { height: 100%; } body { min-height: 100%; }
 		height: 200px;
 		overflow-y: scroll;
 		overflow-x: hidden;
-		border: 1px solid #D8BFD8;
+		//border: 1px solid #D8BFD8;
 
 		.option {
 			width: 175px;
-			padding-left: 5%;
+			margin-left: 2px;
+			padding-left: 5px;
 			padding-right: 15%;
 			font-weight: bold;
 			overflow: hidden;
 			text-overflow: ellipsis;
+			cursor: default;
 
 			&:hover {
 				background: @green;
 				color: white;
 			}
+
+			.prefix {
+				width: 1%;
+				display: table-cell;
+				padding-right: 3px;
+			}
+			.active {
+				color: red;
+				background: transparent;
+			}
+			.texthere {
+				width: 100%;
+				display: block;
+			}
+		}
+		.active {
+			background: @yellow;
+			color: white;
 		}
 	}
 	.botbar {
@@ -73,6 +138,7 @@ html { height: 100%; } body { min-height: 100%; }
 		bottom: 0; left: 0;
 		background: @yellow;
 		color: @brown;
+		cursor: default;
 
 		.top {
 			padding-left: 20px;
@@ -229,6 +295,7 @@ html { height: 100%; } body { min-height: 100%; }
 				border: 2px solid #b8b8b8;
 				color: gray;
 				font-weight: bold;
+				cursor: pointer;
 
 				&:hover {
 					background: @green;

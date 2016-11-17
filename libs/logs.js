@@ -29,7 +29,7 @@ module.exports = function(DEBUG) {
 		});
 	}
 
-	logger.log('info', 'Logger successfully started!');
+	logger.log('info', 'Logger successfully started.');
 
 	// Return logger object
 	return logger;

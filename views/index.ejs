@@ -3,101 +3,19 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Slack</title>
-		<!-- CSS -->
+		<!-- Styles -->
 		<link href="/static/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"></link>
-		<link href="/static/css/chatroom.css" rel="stylesheet"></link>
-		<!-- JS -->
-		<!--<script src="/bower_components/jquery/dist/jquery.min.js"></script>-->
-		<script src="https://unpkg.com/react@15/dist/react.min.js"></script>
-		<script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
-		<script src="https://unpkg.com/react-router/umd/ReactRouter.min.js"></script>
-		<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+		<link href="/static/css/<%= template %>.css" rel="stylesheet"></link>
 	</head>
 	<body>
-		<div class="chatpage">
-			<!-- Left sidebar -->
-			<div class="sidebar">
-				<div class="header">BLICKSY</div>
-				<br><br>
-	          	<div class="miniheader">CHANNELS</div>
-	          	<div class="box">
-	          		<div class="option">#option</div>
-	          		<div class="option">#optionasdsssssssssssssssssssssssssssssssss</div>
-	          		<div class="option">#option</div>
-	          		<div class="option">#option</div>
-	          		<div class="option">#option</div>
-	          		<div class="option">#option</div>
-	          		<div class="option">#option</div>
-	          		<div class="option">#option</div>
-	          		<div class="option">#option</div>
-	          		<div class="option">#option</div>
-	          		<div class="option">#option</div>
-	          		<div class="option">#option</div>
-	          		<div class="option">#option</div>
-	          		<div class="option">#option</div>
-	          		<div class="option">#option</div>
-	          	</div>
-	          	<br>
-	            <div class="miniheader">PEOPLE</div>
-	            <div class="box">
-	          		<div class="option">#option</div>
-	          		<div class="option">#option</div>
-	          		<div class="option">#option</div>
-	          		<div class="option">#option</div>
-	          		<div class="option">#option</div>
-	          	</div>
-	          	<div class="botbar">
-	          		<div class="top">Chatting as:</div>
-	          		<div class="bot">jviding</div>
-	          	</div>
-			</div>
-	        <!-- Chat container -->
-	        <div class="chatbox">
-	        	<div class="chatWrapper">
-		        	<div class="msgBox">
-		        		<!-- First message from user -->
-			        	<div class="newMsg">
-			        		<div class="usrImg">
-			        			<div class="img">img</div>
-			        		</div>
-			        		<div class="msgCont">
-			        			<div class="wrapper">
-			        				<div class="usrName">jviding</div>
-			        				<div class="msgTime">7:55 AM</div>
-			        			</div>
-			        			<div class="msgText">My first message!</div>
-			        		</div>
-			        	</div>
-			        	<!-- If second soon after -->
-			        	<div class="oldMsg">
-			        		<div class="wrapper">
-			        			<div class="oldTime">8:45</div>
-			        			<div class="msgText">And then the second one</div>
-			        		</div>
-			        	</div>
-			        	<!-- Day change -->
-			        	<div class="newDay">
-			   				<div class="dayDivider"></div>
-			        		<div class="dayTime">October 21st</div>
-			        	</div>
-
-			<div id="app"></div>
-
-			        </div>
-		        	<div class="sendCont">
-		        		<form>
-		        			<div class="wrapper">
-		        				<div class="sendMsg">
-		        					<input type="text" placeholder="Send message..." autofocus>
-		        				</div>
-		        				<div class="submitMsg">Submit</div>
-			        		</div>
-			        	</form>
-		        	</div>
-		        </div>
-        	</div>
-		</div>
-		<script type="text/babel" src="/static/js/chatroom.js"></script>
+		<div id="page"></div>
+		<!-- Scripts -->
+		<% if (locals.user) { %>
+			<script>
+				var USER = '<%= user.username %>';
+			</script>
+		<% } %>
+		<script src="/static/js/<%= template %>.js"></script>
 		<!-- Used for development purposes -->
 		<script src="//localhost:35729/livereload.js"></script>
 	</body>

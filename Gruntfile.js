@@ -1,3 +1,7 @@
+/* Use the following script:
+ * <script src="//localhost:35729/livereload.js"></script>
+ * in the end of templates when developing with Grunt watch.
+ */
 module.exports = function(grunt) {
 
   // Project configuration.
@@ -17,76 +21,57 @@ module.exports = function(grunt) {
         presets: ['es2015', 'react']
       },
       jsx: {
-        files: [{
-          expand: true,
-          cwd: 'app/jsx/',
-          src: '*.jsx',
-          dest: 'assets/js/',
-          ext: '.js'
-        }]
+        files: [
+          {expand: true, cwd: 'app/jsx/chatroom/', src: '*.jsx', dest: 'assets/js/dist/', ext: '.js'},
+          {expand: true, cwd: 'app/jsx/frontpage/', src: '*.jsx', dest: 'assets/js/dist/', ext: '.js'}
+        ]
       }
     },
     // Bundle up React components
     webpack: {
       options: {
+        loader: 'babel',
         presets: ['es2015', 'react']
       },
       chatroom: {
-        files: {
-          expand: true,
-          cwd: 'assets/js/',
-          src: '*.js',
-          dest: 'public/js/',
-          ext: '.js'
+        entry: './assets/js/dist/chatroom.js',
+        output: {
+          path: 'assets/js/',
+          filename: 'chatroom.js'
+        }
+      },
+      frontpage: {
+        entry: './assets/js/dist/frontpage.js',
+        output: {
+          path: 'assets/js/',
+          filename: 'frontpage.js'
         }
       }
     },
     // Minify JS
     uglify: {
       all: {
-        files: [{
-          expand: true,
-          cwd: 'app/js/',
-          src: '*.js',
-          dest: 'public/js/',
-          ext: '.js'
-        }, {
-          expand: true,
-          cwd: 'assets/js/',
-          src: '*.js',
-          dest: 'public/js/',
-          ext: '.js'
-        }]
+        files: [
+          {expand: true, cwd: 'app/js/', src: '*.js', dest: 'public/js/', ext: '.js'}, 
+          {expand: true, cwd: 'assets/js/', src: '*.js', dest: 'public/js/', ext: '.js'}
+        ]
       }
     },
     // Compile LESS into CSS
     less: {
     	build: {
-    		files: [{
-          expand: true,
-          cwd: 'app/less/',
-          src: '*.less',
-          dest: 'assets/css/',
-          ext: '.css'
-    		}]
+    		files: [
+          {expand: true, cwd: 'app/less/', src: '*.less', dest: 'assets/css/', ext: '.css'}
+        ]
     	}
     },
     // Minify CSS
     cssmin: {
     	build: {
-    		files: [{
-          expand: true,
-          cwd: 'app/css/',
-          src: '*.css',
-          dest: 'public/css/',
-          ext: '.css'
-    		}, {
-          expand: true,
-          cwd: 'assets/css/',
-          src: '*.css',
-          dest: 'public/css/',
-          ext: '.css'
-        }]
+    		files: [
+          {expand: true, cwd: 'app/css/', src: '*.css', dest: 'public/css/', ext: '.css'}, 
+          {expand: true, cwd: 'assets/css/', src: '*.css', dest: 'public/css/', ext: '.css'}
+        ]
     	}
     },
     // Run all on a change in a file
@@ -95,12 +80,12 @@ module.exports = function(grunt) {
         livereload: true
       },
     	stylesheets: {
-    		files: ['app/css/*.css', 'app/less/*.less'],
-    		tasks: ['less', 'cssmin'],
+    		files: ['app/less/*.less'],
+    		tasks: ['less'],
     	},
     	scripts: {
-    		files: ['app/js/*.js', 'app/jsx/*.jsx'],
-    		tasks: ['jshint', 'babel', 'webpack', 'uglify'],
+    		files: ['app/jsx/*/*.jsx'],
+    		tasks: ['babel', 'webpack'],
       },
       gruntfile: {
         files: ['Gruntfile.js']
