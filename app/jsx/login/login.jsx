@@ -43,7 +43,7 @@ var UserForm = React.createClass({
 		if (event.key == 'Enter') {
 			event.preventDefault();
 			// If enter is pressed try accepting the form
-			this.state.request();
+			this.authRequest();
 		}
 	},
 	validateUsername: function () { 

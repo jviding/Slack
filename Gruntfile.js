@@ -4,6 +4,12 @@
  */
 module.exports = function(grunt) {
 
+  // Use webpack for bundling and minifying React
+  var webpack = require('webpack');
+  // Webpack behaviour depends on dev/production mode
+  var development = require('./config/settings').DEBUG;
+  var webPackMinifyRoot = (development ? 'assets' : 'public');
+
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
@@ -32,29 +38,41 @@ module.exports = function(grunt) {
     webpack: {
       options: {
         loader: 'babel',
-        presets: ['es2015', 'react']
+        presets: ['es2015', 'react'],
+        plugins: (development ? [] : [
+          new webpack.DefinePlugin({
+            'process.env': {
+              'NODE_ENV': JSON.stringify('production')
+            }
+          }),
+          new webpack.optimize.UglifyJsPlugin({
+            compress: {
+              warnings: true
+            }
+          })
+        ])
       },
       chatroom: {
         entry: './assets/js/dist/chatroom.js',
         output: {
-          path: 'assets/js/',
+          path: webPackMinifyRoot+'/js/',
           filename: 'chatroom.js'
         }
       },
       home: {
         entry: './assets/js/dist/home.js',
         output: {
-          path: 'assets/js/',
+          path: webPackMinifyRoot+'/js/',
           filename: 'home.js'
         }
       },
       login: {
         entry: './assets/js/dist/login.js',
         output: {
-          path: 'assets/js/',
+          path: webPackMinifyRoot+'/js/',
           filename: 'login.js'
         }
-      }
+      },
     },
     // Minify JS
     uglify: {
@@ -114,6 +132,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-webpack');
 
   // Create tasks
-  grunt.registerTask('default', ['jshint', 'babel', 'webpack', 'uglify', 'less', 'cssmin']);
+  grunt.registerTask('default', ['babel', 'webpack', 'less', 'cssmin']);
 
 };

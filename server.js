@@ -13,6 +13,7 @@ var http = require('http').Server(app);
 // Connect to database
 var mongoose = require('mongoose');
 logger.log('info', 'Connecting to database...');
+mongoose.Promise = global.Promise;
 mongoose.connect(settings.DB);
 logger.log('info', 'Connection to database established.');
 // Create object to help with database queries
