@@ -9,7 +9,6 @@ module.exports = function (app, logger, database, passport) {
 	// LOGIN
 	app.get('/login', notLoggedIn, function (req, res) {
 		// If user is already logged in, go to default page
-		logger.log('info', 'Passport: User '+req.user+' has logged in.'); 
 		res.render('index.ejs', {template: 'login'});
 	});
 
