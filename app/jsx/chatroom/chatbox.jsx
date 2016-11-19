@@ -77,6 +77,16 @@ var Messages = React.createClass({
 	sortByTime: function (a, b) {
 		return (new Date(a.time) <= new Date(b.time) ? -1 : 1)
 	},
+	componentWillUpdate: function () {
+		// Check if we are scrolled all the way to bottom
+		this.shouldScrollBottom = this.refs.chat.scrollTop + this.refs.chat.offsetHeight === this.refs.chat.scrollHeight;
+	},
+	componentDidUpdate: function () {
+		if (this.shouldScrollBottom) {
+			// If we were scrolled all the way to bottom, then keep us scrolled bottom even when the new message is published
+		    this.refs.chat.scrollTop = this.refs.chat.scrollHeight
+		  }
+	},
 	render: function () {
 		var prev = {sender: '', minutes: -6, day: -1};
 		// If there are messages to show
@@ -106,7 +116,7 @@ var Messages = React.createClass({
 			var messages = <NewDay time={this.getMonthDay(new Date())} />
 		}
 		return (
-			<div className="msgBox">{messages}</div>
+			<div ref="chat" className="msgBox">{messages}</div>
 		);
 	}
 });
