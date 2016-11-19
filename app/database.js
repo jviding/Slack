@@ -185,7 +185,7 @@ module.exports = function Database (logger) {
 		}).limit(range).exec(function (err, result) {
 			if (err) {
 				logger.log('error', 'Database: Couldn\'t fetch range: '+range+' messages on channel: '+channel+' in room: '+room);
-				return done('{[]}');
+				return done('[]');
 			} else {
 				logger.log('silly', 'Database: Fetched '+result.length+' messages, channel: '+channel+', room: '+room);
 				return done(JSON.stringify(result));
@@ -206,7 +206,7 @@ module.exports = function Database (logger) {
 		}).limit(range).exec(function (err, result) {
 			if (err) {
 				logger.log('error', 'Database: Couldn\'t fetch range: '+range+' messages of private chat between '+user+' and '+another+' in room: '+room);
-				return done('{[]}');
+				return done('[]');
 			} else {
 				logger.log('silly', 'Database: Fetched '+result.length+' messages, private chat between '+user+' and '+another+' in room: '+room);
 				return done(JSON.stringify(result));
