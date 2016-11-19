@@ -6,7 +6,7 @@ import Sidebar from './sidebar';
 
 // Socket.io
 import io from 'socket.io-client';
-var socket = io('http://'+require('./../../../config/io-config').ADDR+':3000');
+var socket = io('http://'+require('./../../../config/io-config').ADDR+':'+require('./../../../config/io-config').PORT);
 
 // var USER = '<username>' set on template
 
