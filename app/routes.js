@@ -172,7 +172,7 @@ module.exports = function (app, logger, database, passport) {
 	// Request for messages on a channel
 	app.get('/api/messages/:roomId/:channel/:range?', function (req, res) {
 		// Range is an optional parameter that defaults to 100
-		var range = (req.params.range ? req.params.range : 100);
+		var range = (req.params.range ? parseInt(req.params.range) : 100);
 		if (req.params.channel.length>0 && req.params.channel.charAt(0) === '@') {
 			database.getPrivateMessages(req.params.roomId, req.user.local.username, req.params.channel.slice(1), range, function (result) {
 				res.json('{"messages":'+result+'}');

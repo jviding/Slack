@@ -8,7 +8,7 @@ module.exports = function Database (logger) {
 	function saveMessage (message) {
 		new Message(message).save(function (err, message) {
 			if (err) {
-				logger.log('error', 'Database: Couldn\'t save message: '+message);
+				logger.log('error', 'Database: Couldn\'t save message: '+err);
 			} else {
 				logger.log('silly', 'Database: Saved message: '+message);
 			}
@@ -55,7 +55,7 @@ module.exports = function Database (logger) {
 	function getRooms (user, done) {
 		Room.find({people: {$ne: user._id}}).populate('people').exec(function (err, result) {
 			if (err) {
-				logger.log('error', 'Database: Failed loading all rooms.');
+				logger.log('error', 'Database: Failed loading all rooms. '+err);
 				return done(false, 'Something went wrong!');
 			} else {
 				logger.log('silly', 'Database: Fetched '+result.length+' rooms.');
@@ -68,7 +68,7 @@ module.exports = function Database (logger) {
 	function getRoomsByUser (user, done) {
 		Room.find({people: user._id}).exec(function (err, result) {
 			if (err) {
-				logger.log('error', 'Database: Failed loading rooms by user id: '+user._id);
+				logger.log('error', 'Database: Failed loading rooms by user id. '+err);
 				return done(false, 'Something went wrong!');
 			} else {
 				logger.log('silly', 'Database: Fetched '+result.length+' rooms for user '+user._id+'.');
@@ -184,7 +184,7 @@ module.exports = function Database (logger) {
 			_id : -1 // Newest to oldest
 		}).limit(range).exec(function (err, result) {
 			if (err) {
-				logger.log('error', 'Database: Couldn\'t fetch range: '+range+' messages on channel: '+channel+' in room: '+room);
+				logger.log('error', 'Database: Couldn\'t fetch range: '+range+' messages on channel: '+channel+' in room: '+room+'. '+err);
 				return done('[]');
 			} else {
 				logger.log('silly', 'Database: Fetched '+result.length+' messages, channel: '+channel+', room: '+room);
@@ -205,7 +205,7 @@ module.exports = function Database (logger) {
 			_id : -1 // Newest to oldest
 		}).limit(range).exec(function (err, result) {
 			if (err) {
-				logger.log('error', 'Database: Couldn\'t fetch range: '+range+' messages of private chat between '+user+' and '+another+' in room: '+room);
+				logger.log('error', 'Database: Couldn\'t fetch range: '+range+' messages of private chat between '+user+' and '+another+' in room: '+room+'. '+err);
 				return done('[]');
 			} else {
 				logger.log('silly', 'Database: Fetched '+result.length+' messages, private chat between '+user+' and '+another+' in room: '+room);
@@ -255,7 +255,7 @@ module.exports = function Database (logger) {
 	function saveRoomObject (room, done) {
 		room.save(function (err) {
 			if (err) {
-				logger.log('error', 'Database: Failed to save room: '+room);
+				logger.log('error', 'Database: Failed to save room: '+err);
 				return done(false);
 			}
 			return done(true);
@@ -266,7 +266,7 @@ module.exports = function Database (logger) {
 	function deleteRoomObject (room, done) {
 		room.remove(function (err) {
 			if (err) {
-				logger.log('error', 'Database: Failed removing room '+room);
+				logger.log('error', 'Database: Failed removing room: '+err);
 				return done(false);
 			}
 			return done(true);
@@ -277,7 +277,7 @@ module.exports = function Database (logger) {
 	function findRoomObjectById (room, done) {
 		Room.findOne({_id: room}).populate('people').exec(function (err, result) {
 			if (err) {
-				logger.log('error', 'Database: Error loading room by id: '+room);
+				logger.log('error', 'Database: Error loading room by id: '+err);
 				return done(false);
 			} else if (!result) {
 				return done(false);
@@ -291,7 +291,7 @@ module.exports = function Database (logger) {
 	function findRoomObjectByName (name, done) {
 		Room.findOne({name: name}).populate('people').exec(function (err, result) {
 			if (err) {
-				logger.log('error', 'Database: Error loading room by name: '+room);
+				logger.log('error', 'Database: Error loading room by name: '+err);
 				return done(false);
 			} else if (!result) {
 				return done(false);
