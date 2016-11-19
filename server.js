@@ -6,6 +6,7 @@ var logger = require('./libs/logs')(settings.DEBUG);
 
 // Set up server
 var express = require('express');
+var session = require('express-session');
 var app = express();
 var http = require('http').Server(app);
 
@@ -18,6 +19,10 @@ logger.log('info', 'Connection to database established.');
 var DBHelper = require('./app/database');
 var database = new DBHelper(logger);
 
+// Authentication with passport
+var passport = require('passport');
+require('./config/passport')(passport);
+
 // Socket.io
 var io = require('socket.io')(http);
 var socket = require('./app/io')(io, logger, database);
@@ -25,6 +30,8 @@ var socket = require('./app/io')(io, logger, database);
 // Load all packages
 var fs = require('fs');
 var morgan = require('morgan');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
 
 // Log Morgan to access.log in production
 if (settings.DEBUG === false) {
@@ -53,8 +60,22 @@ if (settings.DEBUG === false) {
 	app.use('/static', express.static(__dirname + '/bower_components'));
 }
 
+// Configure passport and express
+app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(session({
+	secret : settings.SECRET,
+	name   : settings.NAME,
+	proxy  : true,
+	resave : true,
+	saveUninitialized : true
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
 // Routing
-require('./app/routes')(app, logger, database);
+require('./app/routes')(app, logger, database, passport);
 
 // Run server
 http.listen(settings.PORT, function () {

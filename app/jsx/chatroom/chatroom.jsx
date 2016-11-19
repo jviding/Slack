@@ -14,8 +14,8 @@ var socket = io('http://localhost:3000');
 var ChatPage = React.createClass({
 	getInitialState: function () {
 		// Join socket room
-		socket.emit('join room', {user: USER, room: this.props.params.room});
-		return {user: USER, room: this.props.params.room, channel: this.props.params.channel, unseen: ''};
+		socket.emit('join room', {user: USER, room: ROOM});
+		return {user: USER, room: ROOM, channel: this.props.params.channel, unseen: ''};
 	},
 	componentDidMount: function () {
 		// If path is only /:room or /:room/message set general as the default channel
@@ -26,7 +26,7 @@ var ChatPage = React.createClass({
 	render: function () {
 		return (
 			<div className="chatpage">
-				<Sidebar io={socket} user={this.state.user} room={this.state.room} channel={this.props.params.channel} />
+				<Sidebar io={socket} user={this.state.user} roomName={this.props.params.room} room={this.state.room} channel={this.props.params.channel} />
 				<ChatBox io={socket} user={this.state.user} room={this.state.room} channel={this.props.params.channel} newMessage={this.newMessage} />
 			</div>
 		);

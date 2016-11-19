@@ -17,7 +17,7 @@ var NewDay = React.createClass({
 // The first message user sends into a chatbox
 var NewMessage = React.createClass({
 	render: function () {
-		var img = 'img';
+		var img = '.img';
 		return (
 			<div className="newMsg">
         		<div className="usrImg">
@@ -173,14 +173,14 @@ export default React.createClass({
 		this.setState({messages: []});
 		// Download the messages of the new channel
 		$.ajax({
-			url: '/api/'+this.props.room+'/'+channel+'/500', // get latest 500 messages
+			url: '/api/messages/'+this.props.room+'/'+channel+'/500', // get latest 500 messages
 			dataType: 'json',
 			cache: false,
 			success: function(data) {
 				this.appendMessages(JSON.parse(data).messages);
 			}.bind(this),
 			error: function(xhr, status, err) {
-				console.error('/api/'+this.props.room+'/'+this.props.channel+'/500', status, err.toString());
+				console.error('/api/messages/'+this.props.room+'/'+channel+'/500', status, err.toString());
 			}.bind(this)
 	    });
 	},

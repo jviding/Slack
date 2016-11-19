@@ -2,7 +2,7 @@ module.exports = function (io, logger, database) {
 
 	io.on('connection', function (socket) {
 		// New user has opened a socket
-		logger.log('info', 'User connected.');
+		logger.log('silly', 'User connected.');
 
 		// User joins a room
 		socket.on('join room', function (data) {
@@ -25,9 +25,15 @@ module.exports = function (io, logger, database) {
 			socket.to(data.room).emit('new message', data);
 		});
 
+		// A new room has been created
+		socket.on('new room', function () {
+			// Emit to all to trigger the reloads
+			io.emit('new room');
+		});
+
 		// A user has disconnected
 		socket.on('disconnect', function () {
-			logger.log('info', 'User has disconnected.');
+			logger.log('silly', 'User has disconnected.');
 		});
 
 	});

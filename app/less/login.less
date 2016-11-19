@@ -1,0 +1,96 @@
+@brown: #443642;
+@yellow: #E8A723;
+@blue: #70CADB;
+@green: #3EB890;
+@red: #E01765;
+@gray: #FFFAFA;
+
+html { height: 100%; } body { min-height: 100%; }
+
+.page {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	display: table;
+	background: @gray;
+
+	.centerme {
+		display: table-cell;
+		vertical-align: middle;
+
+		.formcontainer {
+			margin-right: auto;
+			margin-left: auto;
+			width: 450px;
+			padding-bottom: 25px;
+			background: @brown;
+
+			.header {
+				padding-top: 25px;
+				font-weight: bold;
+				font-size: 200%;
+				margin-left: 50px;
+				color: @yellow;
+			}
+			.first {
+				margin-top: 10px !important;
+			}
+			.wrapper {
+				margin-right: 50px;
+				margin-left: 50px;
+				margin-top: 25px;
+				display: table;
+
+				.glyphicon {
+					display: table-cell;
+					padding: 0px 8px 0px 10px;
+					margin-bottom: 0;
+					width: 1%;
+					color: @brown;
+					background: @yellow;
+				}
+				input {
+					margin-top: 2px;
+					width: 100%;
+					padding: 5px 5px 5px 5px;
+					display: block;
+					background: @gray;
+					font-weight: bold;
+				}
+			}
+			.error {
+				margin-left: 50px;
+				margin-right: 50px;
+				margin-top: 10px;
+				font-weight: bold;
+				color: @red;
+			}
+			.clickbox {
+				display: table-cell;
+				width: 175px;
+				text-align: center;
+				padding-top: 15px;
+				padding-bottom: 15px;
+				font-size: 150%;
+				font-weight: bold;
+				color: @yellow;
+				cursor: pointer;
+				-webkit-touch-callout: none; /* iOS Safari */
+			    -webkit-user-select: none; /* Chrome/Safari/Opera */
+			     -khtml-user-select: none; /* Konqueror */
+			       -moz-user-select: none; /* Firefox */
+			        -ms-user-select: none; /* Internet Explorer/Edge */
+			            user-select: none;
+
+				&:hover {
+					background: @green;
+					color: @brown;
+				}
+			}
+			.active {
+				background: @yellow;
+				color: @brown;
+			}
+		}
+	}
+}

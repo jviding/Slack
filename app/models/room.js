@@ -3,8 +3,8 @@ var mongoose = require('mongoose');
 var roomSchema = mongoose.Schema({
 	name     : String,
     channels : [String],
-    people   : [mongoose.Schema.Types.ObjectId],
-    admin    : mongoose.Schema.Types.ObjectId,
+    people   : [{type: mongoose.Schema.ObjectId, ref: 'User'}],
+    admin    : {type: mongoose.Schema.ObjectId, ref: 'User'},
     created  : Date
 });
 

@@ -1,0 +1,203 @@
+@brown: #443642;
+@yellow: #E8A723;
+@blue: #70CADB;
+@green: #3EB890;
+@red: #E01765;
+@gray: #FFFAFA;
+
+html { height: 100%; } body { min-height: 100%; background: @gray; }
+
+.fullheight {
+	display: block;
+	height: 100%;
+	padding: 0;
+}
+
+.container-fluid {
+	position: absolute;
+	padding-top: 7%;
+	height: 90%;
+	display: block;
+
+	.headblock {
+		height: 60px;
+		width: 100%;
+		background: @yellow;
+		color: @brown;
+		position: relative;
+		z-index: 10;
+		cursor: default;
+
+		.navwrap {
+			display: table;
+			height: 100%;
+			padding: 0 0 0 15px;
+
+			.navblock {
+				display: table-cell;
+				width: 1%;
+				height: 100%;
+				font-weight: bold;
+				font-size: 110%;
+				vertical-align: middle;
+				padding-right: 5px;
+
+				.navheader {
+					font-weight: bold;
+					font-size: 200%;
+					padding-right: 15px;
+				}
+			}
+			.clickable {
+				padding: 0 10px 0 10px;
+				cursor: pointer;
+
+				&:hover {
+					background: @green;
+					color: @brown;
+				}
+				&:last-child {
+					padding: 0 15px 0 15px;
+				}
+			}
+			.active {
+				background: #392d36;
+				color: @yellow;
+			}
+			.navfiller {
+				display: block;
+				width: 100%;
+			}
+		}
+	}
+	.appbody {
+		position: absolute;
+		top: 0;
+		display: block;
+		width: 100%;
+		height: 100%;
+		padding: 60px 0 120px 0;
+
+		.appcontainer {
+			border-top: 1px solid transparent;
+			height: 100%;
+			background: @brown;
+			overflow-y: scroll;
+
+			.roomhead {
+				font-weight: bold;
+				color: @yellow;
+				font-size: 150%;
+				padding: 5% 15% 5% 15%;
+			}
+			.rooms {
+				width: 100%;
+				padding-bottom: 25px;
+				
+				.roomwrap {
+					display: table;
+					width: 100%;
+
+					&:hover {
+						background: @green;
+					}
+
+					.select(@color: @green) {
+						display: table-cell;
+						width: 15%;
+						text-align: center;
+						background: @brown;
+						a {
+							color: @color;
+							text-decoration: underline;
+							&:hover {
+								color: @gray;
+							}
+						}
+					}
+
+					.join {
+						.select(@green)
+					}
+					.remove {
+						.select(@red)	
+					}
+
+					.room {
+						display: block;
+						width: 100%;
+						color: @gray;
+						font-weight: bold;
+						padding: 3px 10px 3px 10px;
+						border-radius: 2px;
+
+						&:hover {
+							background: @green;
+						}
+					}
+				}
+			}
+		}
+	}
+	.botbar {
+		position: absolute;
+		display: block;
+		width: 100%;
+		height: 80px;
+		bottom: 0;
+		background: @brown;
+		border-radius: 5px;
+
+		.wrapper {
+			padding: 20px 5% 20px 5%;
+			display: table;
+
+			input {
+				display: block;
+				width: 100%;
+				height: 40px;
+				border-radius: 5px 0 0 5px;
+				border: 2px solid @yellow;
+				background: @gray;
+				padding: 0 10px 0 10px;
+				font-weight: bold;
+			}
+			.submit {
+				display: table-cell;
+				width: 1%;
+				border-radius: 0 5px 5px 0; 
+				border: 2px solid @yellow;
+				border-left: 0px;
+				font-weight: bold;
+				padding: 0 5px 0 5px;
+				color: @yellow;
+				cursor: pointer;
+
+				&:hover {
+					background: @green;
+					color: @gray;
+					border: 2px solid @green;
+				}
+			}
+		}
+		.error {
+			font-weight: bold;
+			color: @red;
+			padding: 0 5% 0 5%;
+		}
+	}
+}
+
+// Custom scrollbar
+::-webkit-scrollbar {
+    width: 12px;
+}
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: @brown;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}

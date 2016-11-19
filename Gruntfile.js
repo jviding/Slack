@@ -23,7 +23,8 @@ module.exports = function(grunt) {
       jsx: {
         files: [
           {expand: true, cwd: 'app/jsx/chatroom/', src: '*.jsx', dest: 'assets/js/dist/', ext: '.js'},
-          {expand: true, cwd: 'app/jsx/frontpage/', src: '*.jsx', dest: 'assets/js/dist/', ext: '.js'}
+          {expand: true, cwd: 'app/jsx/home/', src: '*.jsx', dest: 'assets/js/dist/', ext: '.js'},
+          {expand: true, cwd: 'app/jsx/login/', src: '*.jsx', dest: 'assets/js/dist/', ext: '.js'}
         ]
       }
     },
@@ -40,11 +41,18 @@ module.exports = function(grunt) {
           filename: 'chatroom.js'
         }
       },
-      frontpage: {
-        entry: './assets/js/dist/frontpage.js',
+      home: {
+        entry: './assets/js/dist/home.js',
         output: {
           path: 'assets/js/',
-          filename: 'frontpage.js'
+          filename: 'home.js'
+        }
+      },
+      login: {
+        entry: './assets/js/dist/login.js',
+        output: {
+          path: 'assets/js/',
+          filename: 'login.js'
         }
       }
     },

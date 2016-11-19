@@ -10,9 +10,10 @@
 	<body>
 		<div id="page"></div>
 		<!-- Scripts -->
-		<% if (locals.user) { %>
+		<% if (locals.user && locals.room) { %>
 			<script>
-				var USER = '<%= user.username %>';
+				var USER = '<%= user.local.username %>';
+				var ROOM = '<%= room._id %>';
 			</script>
 		<% } %>
 		<script src="/static/js/<%= template %>.js"></script>

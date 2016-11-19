@@ -2,7 +2,7 @@ import React from 'react';
 import $ from 'jquery';
 import { browserHistory } from 'react-router';
 
-// Option in Channels or People
+// Option in People
 var PeopleOption = React.createClass({
 	getInitialState: function () {
 		return ({prefixClass: 'prefix'});
@@ -10,24 +10,23 @@ var PeopleOption = React.createClass({
 	componentDidMount: function () {
 		this.props.io.on('new message', function (msg) {
 			// If another than currently viewed channel receives a message notify user by changing the prefix red
-			if (msg.channel.length > 0 && msg.channel.charAt(0) === '@' && msg.channel.slice(1) === this.props.name) {
+			if (msg.channel.charAt(0) === '@' && msg.channel.slice(1) === this.props.myName && this.props.user.local.username === msg.sender) {
 				this.setState({prefixClass: 'prefix active'});
 			}
 		}.bind(this));
 	},
 	onClick: function () {
-		browserHistory.push('/message/'+this.props.room+'/@'+this.props.user.name);
-		// Return prefix back to white when option is clicked
+		browserHistory.push('/message/'+this.props.roomName+'/@'+this.props.user.local.username);
+		// Return prefix element color back to white when option is clicked
 		this.setState({prefixClass: 'prefix'});
 	},
 	render: function () {
-		var text = this.props.user.name+this.props.postfix;
 		if (this.props.active) {
 			return (
 				<div onClick={this.onClick} className="option active">
 					<div className="wrapper">
 						<div className="prefix">{this.props.prefix}</div>
-						<div className="texthere">{text}</div>
+						<div className="texthere">{this.props.user.local.username}{(this.props.user.local.username === this.props.myName ? ' (you)' : '')}</div>
 					</div>
 				</div>
 			);
@@ -36,7 +35,7 @@ var PeopleOption = React.createClass({
 				<div onClick={this.onClick} className="option">
 					<div className="wrapper">
 						<div className={this.state.prefixClass}>{this.props.prefix}</div>
-						<div className="texthere">{text}</div>
+						<div className="texthere">{this.props.user.local.username}{(this.props.user.local.username === this.props.myName ? ' (you)' : '')}</div>
 					</div>
 				</div>
 			);
@@ -47,7 +46,7 @@ var PeopleOption = React.createClass({
 // List of people in a room
 var PeoplesList = React.createClass({
 	getInitialState: function () {
-		return ({people: [this.props.username]});
+		return ({people: []});
 	},
 	componentDidMount: function () {
 		this.loadPeople();
@@ -67,28 +66,28 @@ var PeoplesList = React.createClass({
 	},
 	loadPeople: function () {
 		$.ajax({
-			url: '/api/'+this.props.room+'/people',
+			url: '/api/people/'+this.props.room,
 			dataType: 'json',
 			cache: false,
 			success: function(data) {
 				this.setState({people: JSON.parse(data).people});
 			}.bind(this),
 			error: function(xhr, status, err) {
-				console.error('/api/'+this.props.room+'/people', status, err.toString());
+				console.error('/api/people/'+this.props.room, status, err.toString());
 			}.bind(this)
 		});
 	},
 	sortByName: function (a, b) {
-		return (a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1);
+		return (a.local.username.toUpperCase() < b.local.username.toUpperCase() ? -1 : 1);
 	},
 	render: function () {
 		var options = this.state.people.sort(this.sortByName).map(function (user, index) {
 			var active = false;
-			if (this.props.channel && this.props.channel.indexOf('@') === 0 && this.props.channel.slice(1) === user.name) {
+			if (this.props.channel && this.props.channel.indexOf('@') === 0 && this.props.channel.slice(1) === user.local.username) {
 				active = true;
 			}
 			return (
-				<PeopleOption key={index} user={user} prefix={'@ '} postfix={(this.props.username === user.name ? ' (you)' : '')} active={active} room={this.props.room} io={this.props.io} />
+				<PeopleOption key={index} user={user} prefix={'@ '} myName={this.props.username} active={active} room={this.props.room} roomName={this.props.roomName} io={this.props.io} />
 			);
 		}.bind(this));
 		return (
@@ -107,16 +106,18 @@ var ChannelOption = React.createClass({
 	componentDidMount: function () {
 		// Color prefix red when another than the currently opened channel receives a message
 		this.props.io.on('new message', function (msg) {
-			this.setState({prefixClass: 'prefix active'});
+			if (this.props.name === msg.channel && this.props.channel !== msg.channel) {
+				this.setState({prefixClass: 'prefix active'});
+			}
 		}.bind(this));
 	},
 	onClick: function () {
-		browserHistory.push('/message/'+this.props.room+'/'+this.props.name);
+		browserHistory.push('/message/'+this.props.roomName+'/'+this.props.name);
 		// Return the prefix back to white when option is clicked
 		this.setState({prefixClass: 'prefix'});
 	},
 	render: function () {
-		if (this.props.active) {
+		if (this.props.channel === this.props.name) {
 			return (
 				<div onClick={this.onClick} className="option active">
 					<div className="wrapper">
@@ -143,7 +144,7 @@ var ChannelsList = React.createClass({
 	render: function () {
 		var options = this.props.options.map(function (name, index) {
 			return (
-				<ChannelOption key={index} name={name} prefix={'# '} active={(this.props.channel === name ? true : false)} room={this.props.room} io={this.props.io} />
+				<ChannelOption key={index} name={name} prefix={'# '} channel={this.props.channel} room={this.props.room} roomName={this.props.roomName} io={this.props.io} />
 			);
 		}.bind(this));
 		return (
@@ -165,14 +166,14 @@ var NewChannel = React.createClass({
 	},
 	handleChange: function (event) {
 		this.setState({value: event.target.value});
-		if (event.target.value.indexOf('@') !== -1 || event.target.value.indexOf(' ') !== -1) {
+		if (!/^([a-zA-Z0-9]*)$/.test(event.target.value) || event.target.value > 15) {
 			this.setState({color: 'red'});
 		} else {
 			this.setState({color: 'black'});
 		}
 	},
 	addChannel: function () {
-		if (this.state.value !== '' && this.state.value.indexOf('@') === -1 && this.state.value.indexOf(' ') === -1) {
+		if (/^([a-zA-Z0-9]*)$/.test(event.target.value) && this.state.value.length > 2 && this.state.value.length < 15) {
 			this.props.add(this.state.value);
 			this.setState({value: ''});
 		}
@@ -209,22 +210,33 @@ export default React.createClass({
 	// Request all the channels of a room
 	loadChannels: function () {
 		$.ajax({
-			url: '/api/'+this.props.room+'/channels',
+			url: '/api/channels/'+this.props.room,
 			dataType: 'json',
 			cache: false,
 			success: function(data) {
 				this.setState({channels: JSON.parse(data).channels});
 			}.bind(this),
 			error: function(xhr, status, err) {
-				console.error('/api/'+this.props.room+'/channels', status, err.toString());
+				console.error('/api/channels/'+this.props.room, status, err.toString());
 			}.bind(this)
 		});
 	},
 	// Add a new channel to the room
 	addChannel: function (channel) {
-		this.props.io.emit('new channel', this.props.room);
-		this.setState({show: false});
-		this.loadChannels();
+		$.ajax({
+			method: 'POST',
+			url: '/api/channels/'+this.props.room+'/'+channel,
+			dataType: 'json',
+			cache: false,
+			success: function(data) {
+				this.props.io.emit('new channel', this.props.room);
+				this.loadChannels();
+				this.setState({show: false});
+			}.bind(this),
+			error: function(xhr, status, err) {
+				console.error('/api/channels/'+this.props.room+'/'+channel, status, err.toString());
+			}.bind(this)
+		});
 	},
 	// Form for adding a new channel
 	showForm: function () {
@@ -233,7 +245,7 @@ export default React.createClass({
 	render: function () {
 		return (
 			<div className="sidebar">
-				<div className="header">{this.props.room.toUpperCase()}</div>
+				<div className="header">{this.props.roomName.toUpperCase()}</div>
 				<br /><br />
 	          	<div onClick={this.showForm} className="miniheader hover">
 	          		<div className="wrapper">
@@ -242,10 +254,10 @@ export default React.createClass({
 	          		</div>
 	          	</div>
 	          	{this.state.show && <NewChannel add={this.addChannel} />}
-	          	<ChannelsList options={this.state.channels} room={this.props.room} channel={this.props.channel} io={this.props.io} />
+	          	<ChannelsList options={this.state.channels} roomName={this.props.roomName} room={this.props.room} channel={this.props.channel} io={this.props.io} />
 	          	<br />
 	            <div className="miniheader">PEOPLE</div>
-	            <PeoplesList username={this.props.user} options={this.props.people} room={this.props.room} channel={this.props.channel} io={this.props.io} />
+	            <PeoplesList username={this.props.user} options={this.props.people} roomName={this.props.roomName} room={this.props.room} channel={this.props.channel} io={this.props.io} />
 	          	<div className="botbar">
 	          		<div className="top">Joined as:</div>
 	          		<div className="bot">{this.props.user}</div>
