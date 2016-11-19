@@ -4,7 +4,7 @@ import $ from 'jquery';
 
 // Socket.io
 import io from 'socket.io-client';
-var socket = io('http://localhost:3000');
+var socket = io('http://'+require('./../../../config/io-config').ADDR+':3000');
 
 // Navbar
 var Navbar = React.createClass({
