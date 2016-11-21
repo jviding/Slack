@@ -19,13 +19,17 @@ module.exports = (function () {
 	// The name of the app - used in cookies (not important)
 	var NAME = 'Slack';
 
+	// Google captcha
+	var CAPTCHA = '';
+
 	return {
 
 		DEBUG : DEBUG,
 		PORT  : PORT,
 		DB    : DB,
 		SECRET: SECRET,
-		NAME  : NAME
+		NAME  : NAME,
+		CAPTCHA : CAPTCHA
 	
 	};
 

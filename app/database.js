@@ -1,6 +1,6 @@
 var Message = require('./models/message');
 var Room    = require('./models/room');
-//var User    = require('./models/user');
+var User    = require('./models/user');
 
 module.exports = function Database (logger) {
 	
@@ -321,8 +321,6 @@ module.exports = function Database (logger) {
 	function usernameBelongsToRoomObject (user, roomObject, done) {
 		var index = -1;
 		for (var i=0; i<roomObject.people.length; i++) {
-			console.log('database:'+roomObject.people[i]);
-			console.log('\nuser:'+user+'\n\n');
 			if (roomObject.people[i].local.username === user) {
 				index = i;
 				break;
@@ -365,9 +363,25 @@ module.exports = function Database (logger) {
 		});
 	};
 
+	// Check if username already exists
+	function checkUsernameExists (username, done) {
+		User.findOne({'local.username': username}).exec(function (err, result) {
+			if (err) {
+				logger.log('error', 'Database: Error loading user by name: '+err);
+				return done(true, 'Something went wrong!');
+			}
+			if (result) {
+				return done(true, 'Username already taken!');
+			} else {
+				return done(false);
+			}
+		});
+	};
+
 	return {
 		addUserToRoom      : addUserToRoom,
 		addChannelToRoom   : addChannelToRoom,
+		checkUsernameExists: checkUsernameExists,
 		getChannelMessages : getChannelMessages,
 		getPrivateMessages : getPrivateMessages,
 		getPeopleByRoomId  : getPeopleByRoomId,

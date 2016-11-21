@@ -1,43 +1,62 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Recaptcha from 'react-recaptcha';
 import $ from 'jquery';
 
 // Sign up and Login form
 var UserForm = React.createClass({
 	getInitialState: function () {
-		return ({error: false, eMessage: '', login: true, request: 'login', sub: 'clickbox active', username: '', password: ''});
+		return ({error: false, eMessage: '', login: true, sub: 'clickbox active', username: '', password: ''});
 	},
-	changeRequestPath: function () {
-		// Switch the form between logging in or signing up
-		var request = (this.state.login ? 'signup' : 'login');
-		this.setState({login: !this.state.login, request: request});
-	},
-	mouseIn: function () {
-		this.setState({sub: 'clickbox'});
-	},
-	mouseOut: function () {
-		this.setState({sub: 'clickbox active'});
+	componentDidMount: function () {
+		if (this.props.wrong) {
+			this.setState({error: true, eMessage: 'Something went wrong!'});
+		}
 	},
 	authRequest: function () {
 		this.setState({error: false});
 		// Validate username
 		if (this.validateUsername()) {
-			// Sign up or login
-			$.ajax({
-				method: 'POST',
-				url: '/'+this.state.request,
-				data: 'username='+encodeURIComponent(this.state.username)+'&password='+encodeURIComponent(this.state.password),
-				success: function(data) {
-					// On success forward to a new page
-					location.href = data.redirect;
-				}.bind(this),
-				error: function(xhr, status, err) {
-					// On error show the error message
-					this.setState({error: true, eMessage: JSON.parse(xhr.responseText).error});
-					console.error('/signup', status, err.toString());
-				}.bind(this)
-		    });
+			if (this.state.login) {
+				this.doLogin();
+			} else {
+				this.doSignup();
+			}
 		}
+	},
+	doLogin: function () {
+		$.ajax({
+			method: 'POST',
+			url: '/login',
+			data: 'username='+encodeURIComponent(this.state.username)+'&password='+encodeURIComponent(this.state.password),
+			success: function(data) {
+				// On success forward to a new page
+				location.href = data.redirect;
+			}.bind(this),
+			error: function(xhr, status, err) {
+				// On error show the error message
+				this.setState({error: true, eMessage: JSON.parse(xhr.responseText).error});
+				console.error('/login', status, err.toString());
+			}.bind(this)
+	    });
+	},
+	doSignup: function () {
+		$.ajax({
+			method: 'GET',
+			url: '/api/username/'+this.state.username,
+			success: function(data) {
+				// On success ask captcha
+				if (JSON.parse(data).success) {
+					this.props.creds(this.state.username, this.state.password);
+					this.props.doCaptcha();
+				} else {
+					this.setState({error: true, eMessage: JSON.parse(data).message});
+				}
+			}.bind(this),
+			error: function(xhr, status, err) {
+				console.error('/signup', status, err.toString());
+			}.bind(this)
+	    });
 	},
 	pressEnter: function (event) {
 		if (event.key == 'Enter') {
@@ -75,8 +94,8 @@ var UserForm = React.createClass({
 				</div>
 				{this.state.error && <div className="error">{this.state.eMessage}</div>}
 				<div className="wrapper">
-					{this.state.login && <div onMouseEnter={this.mouseIn} onMouseLeave={this.mouseOut} onClick={this.changeRequestPath} className="clickbox click">Sign up</div>}
-					{!this.state.login && <div onMouseEnter={this.mouseIn} onMouseLeave={this.mouseOut} onClick={this.changeRequestPath} className="clickbox click">Login</div>}
+					{this.state.login && <div onMouseEnter={(e) => this.setState({sub: 'clickbox'})} onMouseLeave={(e) => this.setState({sub: 'clickbox active'})} onClick={(e) => this.setState({login: !this.state.login})} className="clickbox click">Sign up</div>}
+					{!this.state.login && <div onMouseEnter={(e) => this.setState({sub: 'clickbox'})} onMouseLeave={(e) => this.setState({sub: 'clickbox active'})} onClick={(e) => this.setState({login: !this.state.login})} className="clickbox click">Login</div>}
 					<div onClick={this.authRequest} className={this.state.sub}>Submit</div>
 				</div>
 			</form>
@@ -84,14 +103,56 @@ var UserForm = React.createClass({
 	}
 });
 
+// Google captcha
+var GoogleCaptcha = React.createClass({
+	onloadCallback: function () {
+		return;
+	},
+	verifyCallback: function (response) {
+		$.ajax({
+			method: 'POST',
+			url: '/signup',
+			data: 'username='+encodeURIComponent(this.props.usr)+'&password='+encodeURIComponent(this.props.psw)+'&captcha='+encodeURIComponent(response),
+			success: function(data) {
+				// On success forward to the home page
+				location.href = data.redirect;
+			}.bind(this),
+			error: function(xhr, status, err) {
+				// On error show the error message and go back to form
+				console.error('/signup', status, err.toString());
+				this.props.doCaptcha();
+			}.bind(this)
+	    });
+	},
+	render: function () {
+		return (
+			<div className="">
+				<div className="header">Are you a robot?</div>
+				<br /><br />
+				<div className="captcha">
+					<Recaptcha render="explicit" sitekey="6Ld-eQwUAAAAAECEtjYEX2syFlfpdDK00NiYWQru" onloadCallback={this.onloadCallback} verifyCallback={this.verifyCallback} />
+				</div>
+				<br />
+			</div>
+		);
+	}
+});
+
 // Home page
 var Page = React.createClass({
+	getInitialState: function () {
+		return ({captcha: false, username: '', password: '', wrong: false});
+	},
+	setCredentials: function (usr, psw) {
+		this.setState({username: usr, password: psw});
+	},
 	render: function () {
 		return (
 			<div className="page">
 				<div className="centerme">
 					<div className="formcontainer">
-						<UserForm />
+						{!this.state.captcha && <UserForm wrong={this.state.wrong} creds={this.setCredentials} doCaptcha={() => this.setState({captcha: true})} />}
+						{this.state.captcha && <GoogleCaptcha usr={this.state.username} psw={this.state.password} doCaptcha={() => this.setState({captcha: false, wrong: true})} />}
 					</div>
 				</div>
 			</div>

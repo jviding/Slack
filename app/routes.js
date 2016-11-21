@@ -1,5 +1,9 @@
 module.exports = function (app, logger, database, passport) {
 
+	var captchaSecret = require('./../config/settings').CAPTCHA;
+	var request = require('request');
+	var bodyParser = require('body-parser');
+
 	// DEFAULT
 	app.get('/', isLoggedIn, function (req, res) {
 		// Login page if not logged in yet, otherwise home page
@@ -28,23 +32,37 @@ module.exports = function (app, logger, database, passport) {
 
 	// SIGNUP
 	app.post('/signup', notLoggedIn, function (req, res, next) {
-		// Use passport for validating the Sign up request
-		passport.authenticate('local-signup', function (err, user, info) {
-			if (err) {
-				logger.log('error', 'Passport: Sign up: '+err.name+' '+err.message); 
-				return res.status(500).send({ error: info }); 
+		// Check captcha first
+		request.post({
+			url :'https://www.google.com/recaptcha/api/siteverify',
+			form: {
+				secret : captchaSecret,
+				response : req.body.captcha
 			}
-			if (!user) { 
-				logger.log('info', 'Passport: Sign up failed for username \''+req.body.username+'\': '+info);
-				return res.status(500).send({ error: info }); }
-			// User created, try logging in
-			req.logIn(user, function (err) {
-				if (err) { return res.status(500); }
-				// New user successfully created and logged in
-				logger.log('info', 'Passport: User '+user.local.username+' has logged in.'); 
-				return res.status(201).send({ redirect: '/home' });
-			});
-		})(req, res, next);
+		}, function (err, httpResponse, body) {
+			if (JSON.parse(body.toString()).success) {
+				// Captcha was successful
+				passport.authenticate('local-signup', function (err, user, info) {
+					if (err) {
+						logger.log('error', 'Passport: Sign up: '+err.name+' '+err.message); 
+						return res.status(500).send({ error: info }); 
+					}
+					if (!user) { 
+						logger.log('info', 'Passport: Sign up failed for username \''+req.body.username+'\': '+info);
+						return res.status(500).send({ error: info }); }
+					// User created, try logging in
+					req.logIn(user, function (err) {
+						if (err) { return res.status(500); }
+						// New user successfully created and logged in
+						logger.log('info', 'Passport: User '+user.local.username+' has logged in.'); 
+						return res.status(201).send({ redirect: '/home' });
+					});
+				})(req, res, next);
+			} else {
+				// Captcha failed
+				return res.status(500).send({ error: 'You seem like a robot!'});
+			}
+		});
 	});
 
 	// LOGIN
@@ -182,6 +200,17 @@ module.exports = function (app, logger, database, passport) {
 				res.json('{"messages":'+result+'}');
 			});
 		}
+	});
+
+	// Check if username is already taken
+	app.get('/api/username/:username', function (req, res) {
+		database.checkUsernameExists(req.params.username, function (exists, message) {
+			if (exists) {
+				return res.json('{"success": false, "message":"'+message+'"}');
+			} else {
+				return res.json('{"success": true}');
+			}
+		});
 	});
 
 	// Requested URL didn't match anything, go to default page
