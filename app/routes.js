@@ -18,9 +18,10 @@ module.exports = function (app, logger, database, passport) {
 
 	// LOGOUT
 	app.get('/logout', isLoggedIn, function (req, res) {
+		var username = req.user.local.username+' (id: '+req.user._id+')';
 		// If user is not logged in, go to default page, otherwise log out
 		req.logout();
-		logger.log('info', 'Passport: User '+req.user+' has logged out.'); 
+		logger.log('info', 'Passport: User '+username+' has logged out.'); 
 		res.redirect('/');
 	});
 
